@@ -204,6 +204,7 @@ tasks.named("preBuild").configure {
             <h2 id="plugin-configuration">Plugin Configuration</h2>
 
             <h3>Basic Configuration</h3>
+            <p>Modify <code>brightsdk</code> configuration block values to override defaults:</p>
             <ul>
                 <li><strong>dir:</strong> The directory where the SDK files will be stored (default: <code>"libs"</code>).</li>
                 <li><strong>version:</strong> The SDK version to use (default: <code>"latest"</code>).</li>
@@ -211,15 +212,12 @@ tasks.named("preBuild").configure {
                 <li><strong>useLocalCache:</strong> Whether to use a local cache for the SDK files (default: <code>false</code>).</li>
             </ul>
 
-            <h3>Advanced Configuration</h3>
-            <p>Modify <code>brightsdk</code> configuration block values to override defaults.</p>
-
             <h2 id="using-the-plugin">Using the Plugin</h2>
 
-            <h3>Checking for Updates</h3>
+            <h3>Checking for Bright SDK Updates</h3>
             <p>The plugin will automatically check for the latest SDK version based on the provided configuration.</p>
 
-            <h3>Updating the Plugin</h3>
+            <h3>Updating Bright SDK</h3>
             <p>If version is set to "latest", and a newer version is available, the plugin will download and replace the existing SDK files.</p>
 
             <h3>Backward Compatibility</h3>
