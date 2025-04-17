@@ -161,6 +161,16 @@
     }
 }
 
+// default values kept for reference
+ext.brightsdk = [
+    dir: "libs",
+    version: "latest",
+    ext: "brightsdk",
+    consumerProjects: "app",
+    useLocalCache: false,
+    useMavenLocal: false,
+]
+
 apply plugin: com.brightdata.BrightSdkPlugin
 
 // this configuration contains default values and can be modified
@@ -191,7 +201,7 @@ tasks.named("preBuild").configure {
                 <pre id="gradle-build"><code>./gradlew build</code></pre>
                 <button class="copy-button" onclick="copyToClipboard('gradle-build')"><i class="fa-regular fa-clipboard"></i></button>
             </div>
-            <p>The <code>updateBrightSdk</code> task will automatically execute before the <code>preBuild</code> task, ensuring that the latest version of the Bright SDK is used in your project.</p>
+            <p>The <code>installBrightSdk</code> task will automatically execute before the <code>preBuild</code> task, ensuring that the latest version of the Bright SDK is used in your project.</p>
 
             <h3>Explanation:</h3>
             <ul>
@@ -206,6 +216,7 @@ tasks.named("preBuild").configure {
             <ul>
                 <li><strong>version:</strong> The SDK version to use (default: <code>"latest"</code>).</li>
                 <li><strong>ext:</strong> The file extension for the SDK files (default: <code>"brightsdk"</code>).</li>
+                <li><strong>useMavenLocal:</strong> Auto-inject SDK with it's dependencies using MavenLocal (default: <code>false</code>).</li>
             </ul>
 
             <h2 id="using-the-plugin">Using the Plugin</h2>
