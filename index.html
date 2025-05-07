@@ -173,12 +173,6 @@ ext.brightsdk = [
 
 apply plugin: com.brightdata.BrightSdkPlugin
 
-// this configuration contains default values and can be modified
-brightsdk {
-    ext = 'brightsdk' // override extension name for sdk files in case you need to share it with other plugins
-    version = 'latest' // specify sdk version, e.g. 1.482.706
-}
-
 tasks.named("preBuild").configure {
     dependsOn installBrightSdk
 }</code></pre>
