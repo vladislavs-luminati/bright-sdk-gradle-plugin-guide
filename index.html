@@ -171,7 +171,7 @@ ext.brightsdk = [
     useMavenLocal: false,
 ]
 
-apply plugin: com.brightdata.BrightSdkPlugin
+apply plugin: 'com.brightdata.brightsdk-gradle'
 
 tasks.named("preBuild").configure {
     dependsOn installBrightSdk
