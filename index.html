@@ -57,6 +57,13 @@
             border-radius: 5px;
             font-weight: bold;
         }
+        .notice {
+            background-color: #e8f4fd;
+            border-left: 4px solid #0044cc;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 16px 0;
+        }
         .container {
             display: flex;
             max-width: 1200px;
@@ -101,6 +108,7 @@
                 <li><a href="#introduction">Introduction</a></li>
                 <li><a href="#benefits">Benefits</a></li>
                 <li><a href="#prerequisites">Prerequisites</a></li>
+                <li><a href="#api-key">API Key</a></li>
                 <li><a href="#getting-started">Getting Started</a></li>
                 <li><a href="#installation-instructions">Installation Instructions</a></li>
                 <li><a href="#plugin-configuration">Plugin Configuration</a></li>
@@ -121,7 +129,7 @@
             <h2 id="benefits">Benefits</h2>
             <ul>
                 <li><strong>Automated Updates:</strong> Automatically fetches and installs the latest version of the Bright SDK, reducing manual overhead.</li>
-                <li><strong>Seamless Integration:</strong> Simplifies the process of adding the Bright SDK as a dependency in your project’s <code>build.gradle</code> file.</li>
+                <li><strong>Seamless Integration:</strong> Simplifies the process of adding the Bright SDK as a dependency in your project's <code>build.gradle</code> file.</li>
                 <li><strong>Version Management:</strong> Allows easy switching between different SDK versions, which is particularly useful for testing and debugging.</li>
                 <li><strong>Local Caching:</strong> Supports caching of SDK files, minimizing the need for repeated downloads.</li>
             </ul>
@@ -131,7 +139,48 @@
                 <li><strong>Java Development Kit (JDK):</strong> Version 17 or higher, with backward compatibility for Java 8.</li>
                 <li><strong>Gradle:</strong> Version 6.7 or later.</li>
                 <li><strong>Internet Access:</strong> Required for downloading the SDK version information and the SDK itself.</li>
+                <li><strong>BrightSDK API Key:</strong> Required to authenticate with the SDK releases API. See the <a href="#api-key">API Key</a> section below.</li>
             </ul>
+
+            <h2 id="api-key">API Key</h2>
+            <p>Starting from plugin version <strong>1.7.0</strong>, the plugin authenticates with the BrightSDK releases API using an API key. This is required — builds will fail without it.</p>
+            <div class="notice">
+                <strong>&#128274; Authentication required:</strong> The plugin calls
+                <code>GET https://bright-sdk.com/sdk_api/sdk/integration/config</code>
+                with an <code>api-key</code> HTTP header. The value is read from the
+                <code>SDK_API_KEY</code> environment variable.
+            </div>
+
+            <h3>How to obtain an API key</h3>
+            <ol>
+                <li>Log in to the <a href="https://brightdata.com" target="_blank">BrightData Control Panel</a>.</li>
+                <li>Go to <strong>Company profile</strong> in the left sidebar.</li>
+                <li>Open the <strong>API keys</strong> section.</li>
+                <li>Click <strong>Add API key</strong>, give it a name, and copy the generated key.</li>
+            </ol>
+            <p>For step-by-step screenshots, see the
+                <a href="https://github.com/BrightSDK/bright-sdk-integration/blob/main/docs/obtain-api-key.md" target="_blank">obtain-api-key guide</a>.
+            </p>
+
+            <h3>Setting the environment variable</h3>
+            <p><strong>macOS / Linux</strong> — add to your shell profile (<code>~/.zshrc</code>, <code>~/.bashrc</code>, etc.) or export before each build:</p>
+            <div class="pre-container">
+                <pre id="export-key-unix"><code>export SDK_API_KEY=my-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code></pre>
+                <button class="copy-button" onclick="copyToClipboard('export-key-unix')"><i class="fa-regular fa-clipboard"></i></button>
+            </div>
+
+            <p><strong>Windows (PowerShell)</strong></p>
+            <div class="pre-container">
+                <pre id="export-key-win"><code>$env:SDK_API_KEY = "my-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"</code></pre>
+                <button class="copy-button" onclick="copyToClipboard('export-key-win')"><i class="fa-regular fa-clipboard"></i></button>
+            </div>
+
+            <p><strong>CI / GitHub Actions</strong> — store the key as a repository secret and expose it as an environment variable in your workflow:</p>
+            <div class="pre-container">
+                <pre id="export-key-ci"><code>env:
+  SDK_API_KEY: ${{ secrets.SDK_API_KEY }}</code></pre>
+                <button class="copy-button" onclick="copyToClipboard('export-key-ci')"><i class="fa-regular fa-clipboard"></i></button>
+            </div>
 
             <h2 id="getting-started">Getting Started</h2>
 
@@ -140,13 +189,21 @@
                 <li><strong>JDK:</strong> Version 17 or higher.</li>
                 <li><strong>Gradle:</strong> Version 6.7 or later.</li>
                 <li><strong>Supported Platforms:</strong> Any platform where Java and Gradle can run (e.g., Windows, macOS, Linux).</li>
+                <li><strong>SDK_API_KEY:</strong> Environment variable set to your BrightSDK API key (see <a href="#api-key">API Key</a>).</li>
             </ol>
 
             <h2 id="installation-instructions">Installation Instructions</h2>
 
             <h3>Step-by-Step Integration into the Application</h3>
 
-            <h3>Step 1: Adding the Plugin to Your Project</h3>
+            <h3>Step 1: Set your API key</h3>
+            <p>Export <code>SDK_API_KEY</code> before building (see <a href="#api-key">API Key</a> for how to obtain one):</p>
+            <div class="pre-container">
+                <pre id="step1-export"><code>export SDK_API_KEY=my-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code></pre>
+                <button class="copy-button" onclick="copyToClipboard('step1-export')"><i class="fa-regular fa-clipboard"></i></button>
+            </div>
+
+            <h3>Step 2: Adding the Plugin to Your Project</h3>
             <ol>
                 <li>
                     <p><strong>Create a <code>brightsdk.gradle</code> File in the <code>app/</code> Directory:</strong></p>
@@ -189,18 +246,19 @@ tasks.named("preBuild").configure {
                 </li>
             </ol>
 
-            <h3>Step 2: Verifying the Integration</h3>
+            <h3>Step 3: Verifying the Integration</h3>
             <p>Run your Gradle build process as usual, e.g:</p>
             <div class="pre-container">
                 <pre id="gradle-build"><code>./gradlew build</code></pre>
                 <button class="copy-button" onclick="copyToClipboard('gradle-build')"><i class="fa-regular fa-clipboard"></i></button>
             </div>
-            <p>The <code>installBrightSdk</code> task will automatically execute before the <code>preBuild</code> task, ensuring that the latest version of the Bright SDK is used in your project.</p>
+            <p>The <code>installBrightSdk</code> task will automatically execute before the <code>preBuild</code> task, fetching the latest SDK version via the authenticated integration config API.</p>
 
             <h3>Explanation:</h3>
             <ul>
                 <li><strong><code>brightsdk.gradle</code> in <code>app/</code> Directory:</strong> This file contains the configuration and application of the Bright SDK Update Plugin.</li>
                 <li><strong>Auto-Update Setup:</strong> By adding the specified lines in <code>app/build.gradle</code>, you ensure that the SDK update runs before the <code>preBuild</code> task, which is an early stage in the build process.</li>
+                <li><strong>API Key:</strong> The plugin reads <code>SDK_API_KEY</code> from the environment at build time. If the variable is not set, the build will fail with a descriptive error.</li>
             </ul>
 
             <h2 id="plugin-configuration">Plugin Configuration</h2>
@@ -216,10 +274,10 @@ tasks.named("preBuild").configure {
             <h2 id="using-the-plugin">Using the Plugin</h2>
 
             <h3>Checking for Bright SDK Updates</h3>
-            <p>The plugin will automatically check for the latest SDK version based on the provided configuration.</p>
+            <p>The plugin will automatically check for the latest SDK version based on the provided configuration. It calls <code>GET /sdk/integration/config</code> with your <code>SDK_API_KEY</code> to retrieve available versions and download URLs.</p>
 
             <h3>Updating Bright SDK</h3>
-            <p>If version is set to "latest", and a newer version is available, the plugin will download and replace the existing SDK files.</p>
+            <p>If version is set to "latest", and a newer version is available, the plugin will download and replace the existing SDK files using the URL resolved from the integration config response.</p>
 
             <h3>Backward Compatibility</h3>
             <p>The plugin supports backward compatibility with older SDK versions, allowing you to switch between versions as needed.</p>
@@ -230,6 +288,8 @@ tasks.named("preBuild").configure {
             <h2 id="best-practices">Best Practices</h2>
             <ul>
                 <li><strong>Regular Updates:</strong> Run your gradle with <code>--refresh-dependencies</code> to keep your plugins up-to-date with the latest features and bugfixes.</li>
+                <li><strong>Secure your API key:</strong> Never commit <code>SDK_API_KEY</code> to source control. Use environment variables, CI secrets, or a secrets manager.</li>
+                <li><strong>CI/CD:</strong> Store the key as a repository secret (e.g. <code>secrets.SDK_API_KEY</code> in GitHub Actions) and pass it as an env var in your workflow.</li>
             </ul>
 
             <h2 id="faq">FAQ</h2>
@@ -240,6 +300,8 @@ tasks.named("preBuild").configure {
                 <li><strong>Q:</strong> How do I update the Bright SDK?<br><strong>A:</strong> Simply run the <code>updateBrightSdk</code> task before your build.</li>
                 <li><strong>Q:</strong> Can I use this plugin with older versions of the SDK?<br><strong>A:</strong> Yes, the plugin supports backward compatibility with older SDK versions.</li>
                 <li><strong>Q:</strong> What should I do if I encounter issues?<br><strong>A:</strong> Check the <a href="https://vladislavs-luminati.github.io/bright-sdk-gradle-plugin-docs/com/brightdata/package-summary.html" target="_blank">plugin documentation</a> and ensure you are using the latest version. If issues persist, contact support.</li>
+                <li><strong>Q:</strong> The build fails with "Android download URL not resolved". What does that mean?<br><strong>A:</strong> The <code>SDK_API_KEY</code> environment variable is missing or invalid. Set it before running the build — see the <a href="#api-key">API Key</a> section.</li>
+                <li><strong>Q:</strong> How do I get a BrightSDK API key?<br><strong>A:</strong> Log in to the BrightData Control Panel → Company profile → API keys → Add API key. See the <a href="https://github.com/BrightSDK/bright-sdk-integration/blob/main/docs/obtain-api-key.md" target="_blank">step-by-step guide with screenshots</a>.</li>
             </ul>
 
             <h2 id="support">Support</h2>
